@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public final class InMemoryMemberRepository implements MemberRepository {
 
     private final AtomicInteger counter = new AtomicInteger(0);
-    private final Map<MemberId, Member> data = new ConcurrentHashMap<>();
+    private final Map<Integer, Member> data = new ConcurrentHashMap<>();
 
     @Override
-    public void removeById(final MemberId memberId) { data.remove(memberId); }
+    public void removeById(final MemberId memberId) { data.remove(memberId.getValue()); }
 
     @Override
     public boolean isEmpty() {
@@ -26,7 +26,7 @@ public final class InMemoryMemberRepository implements MemberRepository {
 
     @Override
     public Member findById(final MemberId memberId) {
-        final Member member = data.get(memberId);
+        final Member member = data.get(memberId.getValue());
         if (member == null) {
             throw NoSuchEntityException.withId(memberId);
         }
@@ -41,7 +41,7 @@ public final class InMemoryMemberRepository implements MemberRepository {
 
     @Override
     public void add(final Member member) {
-        data.put(member.getMemberId(), member);
+        data.put(member.getMemberId().getValue(), member);
     }
 
 
