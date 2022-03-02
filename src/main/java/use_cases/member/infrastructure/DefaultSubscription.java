@@ -7,11 +7,11 @@ public final class DefaultSubscription implements Subscription {
 
     @Override
     public String subscriptionType() {
-        return SubscriptionType.DEFAULT.name();
+        return SubscriptionType.FREE.name();
     }
 
     @Override
     public double pricePerMonth() {
-        return 10.0;
+        return 0.0;
     }
 }
