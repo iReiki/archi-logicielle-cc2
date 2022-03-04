@@ -12,4 +12,8 @@ public class MembersResponse {
     public MembersResponse(List<MemberResponse> members) {
         this.members = members;
     }
+
+    public List<MemberResponse> getMembers() {
+        return members;
+    }
 }

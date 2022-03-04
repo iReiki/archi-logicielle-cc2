@@ -29,4 +29,8 @@ public class MemberResponse {
                 ", subscription=" + this.subscription +
                 '}';
     }
+
+    public String getId() {
+        return id;
+    }
 }

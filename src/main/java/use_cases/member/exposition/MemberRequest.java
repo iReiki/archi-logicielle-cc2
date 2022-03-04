@@ -7,6 +7,10 @@ public class MemberRequest {
 
     @NotNull
     @NotBlank
+    public String id;
+
+    @NotNull
+    @NotBlank
     public String lastname;
 
     @NotNull

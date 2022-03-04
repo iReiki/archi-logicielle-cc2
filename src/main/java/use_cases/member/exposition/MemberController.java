@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import use_cases.member.application.CreateMember;
+import use_cases.member.application.ModifyMemberSubscription;
 import use_cases.member.application.RetrieveMembers;
 import use_cases.member.domain.EmailAddress;
 import use_cases.member.domain.Member;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -51,6 +53,22 @@ public class MemberController {
     public ResponseEntity<Void> create(@RequestBody @Valid MemberRequest request) {
         CreateMember createMember = new CreateMember(request.lastname, request.firstname, new EmailAddress(request.emailAddress.email), request.password, request.subscription.type);
         this.commandBus.send(createMember);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(path = "/members", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SubscriptionResponse> updateSubscription(@RequestBody @Valid MemberRequest request,
+                                                                   SubscriptionResponse subscription) {
+        ResponseEntity<MembersResponse> membersResponse = this.getAll();
+        List<MemberResponse> members = Objects.requireNonNull(membersResponse.getBody()).getMembers();
+
+        for (MemberResponse member : members) {
+            if (member.getId().equals(request.id)) {
+                ModifyMemberSubscription modifyMemberSubscription = new ModifyMemberSubscription(
+                        Integer.parseInt(member.id), subscription);
+                this.commandBus.send(modifyMemberSubscription);
+            }
+        }
         return ResponseEntity.ok().build();
     }
 
