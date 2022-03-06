@@ -1,5 +1,6 @@
 package projectAl.use_cases.member.exposition;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import projectAl.kernel.CommandBus;
 import projectAl.kernel.QueryBus;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class MemberController {
     private final CommandBus commandBus;
     private final QueryBus queryBus;
 
-    public MemberController(CommandBus commandBus, QueryBus queryBus) {
+    public MemberController(@Qualifier("memberCommandBus") CommandBus commandBus, @Qualifier("memberQueryBus") QueryBus queryBus) {
         this.commandBus = commandBus;
         this.queryBus = queryBus;
     }

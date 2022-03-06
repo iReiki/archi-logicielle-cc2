@@ -10,6 +10,11 @@ import projectAl.use_cases.member.domain.MemberId;
 import projectAl.use_cases.member.domain.Subscription;
 import projectAl.use_cases.member.exposition.SubscriptionResponse;
 import projectAl.use_cases.member.infrastructure.BusinessSubscription;
+import projectAl.use_cases.payment.application.*;
+import projectAl.use_cases.payment.domain.CreditCard;
+import projectAl.use_cases.payment.domain.CreditCardId;
+import projectAl.use_cases.payment.domain.Payment;
+import projectAl.use_cases.payment.domain.PaymentId;
 
 import java.util.List;
 
@@ -40,5 +45,29 @@ public class SpringMain {
         RetrieveMembersBySubscriptionHandler retrieveMembersBySubscriptionHandler = applicationContext.getBean(RetrieveMembersBySubscriptionHandler.class);
         final List<Member> searchedMembers = retrieveMembersBySubscriptionHandler.handle(retrieveMembersBySubscription);
         searchedMembers.forEach(System.out::println);
+
+        //--5. Create Payment// Member
+        // Member
+        RetrieveMemberByIdHandler retrieveMemberByIdHandler = applicationContext.getBean(RetrieveMemberByIdHandler.class);
+        RetrieveMemberById retrieveMemberById = new RetrieveMemberById(memberId);
+        Member createdMember = retrieveMemberByIdHandler.handle(retrieveMemberById).get(0);
+        // Create Credit Card
+        CreateCreditCardCommandHandler createCreditCardCommandHandler = applicationContext.getBean(CreateCreditCardCommandHandler.class);
+        CreateCreditCard createCreditCard = new CreateCreditCard("1234133412357896", "22-04", "235");
+        final CreditCardId creditCardId = createCreditCardCommandHandler.handle(createCreditCard);
+        // Retrieve Credit Card created
+        RetrieveCreditCardByIdHandler retrieveCreditCardByIdHandler = applicationContext.getBean(RetrieveCreditCardByIdHandler.class);
+        RetrieveCreditCardById retrieveCreditCardById = new RetrieveCreditCardById(creditCardId);
+        // Payment
+        CreatePaymentCommandHandler paymentCommandHandler = applicationContext.getBean(CreatePaymentCommandHandler.class);
+        CreditCard creditCard = retrieveCreditCardByIdHandler.handle(retrieveCreditCardById).get(0);
+        CreatePayment createPayment = new CreatePayment(createdMember, creditCard);
+        final PaymentId paymentId = paymentCommandHandler.handle(createPayment);
+
+        //--6. Retrieve all payments for specific member
+        RetrievePaymentsByMember retrievePaymentsByMember = new RetrievePaymentsByMember(memberId);
+        RetrievePaymentsByMemberHandler retrievePaymentsByMemberHandler = applicationContext.getBean(RetrievePaymentsByMemberHandler.class);
+        final List<Payment> payments = retrievePaymentsByMemberHandler.handle(retrievePaymentsByMember);
+        payments.forEach(System.out::println);
     }
 }

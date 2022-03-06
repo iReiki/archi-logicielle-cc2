@@ -50,6 +50,18 @@ public final class Member implements Entity<MemberId> {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Member)) {
+            return false;
+        }
+        Member member = (Member) obj;
+        return this.memberId == member.memberId;
+    }
+
+    @Override
     public String toString() {
         String hiddenPassword = "*".repeat(this.password.length());
         //String hiddenPassword = this.password;
